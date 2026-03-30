@@ -90,7 +90,7 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../../dist')));
     
     // Fallback all other routes to Vue index.html
-    app.get('*', (req, res, next) => {
+    app.get('/{*path}', (req, res, next) => {
         if (req.originalUrl.startsWith('/api')) {
             return next(); // Let API 404 handler take over
         }
