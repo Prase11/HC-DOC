@@ -12,9 +12,17 @@ dotenv.config({ path: join(__dirname, '..', '..', '.env') });
 
 let sequelize;
 
-if (process.env.DATABASE_URL) {
+// Detect database connection method:
+// 1. DATABASE_URL (Railway reference or manual)
+// 2. PGHOST (Railway PostgreSQL auto-injected)
+// 3. DB_HOST (local development .env)
+const dbUrl = process.env.DATABASE_URL || process.env.DATABASE_PUBLIC_URL;
+const pgHost = process.env.PGHOST;
+
+if (dbUrl) {
     // Railway / production: use DATABASE_URL directly
-    sequelize = new Sequelize(process.env.DATABASE_URL, {
+    console.log('🔗 Connecting via DATABASE_URL...');
+    sequelize = new Sequelize(dbUrl, {
         dialect: 'postgres',
         logging: false,
         dialectOptions: {
@@ -35,8 +43,40 @@ if (process.env.DATABASE_URL) {
             freezeTableName: true
         }
     });
+} else if (pgHost) {
+    // Railway PostgreSQL: use PG* variables
+    console.log('🔗 Connecting via PG* variables...');
+    sequelize = new Sequelize(
+        process.env.PGDATABASE || 'railway',
+        process.env.PGUSER || 'postgres',
+        process.env.PGPASSWORD || '',
+        {
+            host: pgHost,
+            port: parseInt(process.env.PGPORT, 10) || 5432,
+            dialect: 'postgres',
+            logging: false,
+            dialectOptions: {
+                ssl: {
+                    require: true,
+                    rejectUnauthorized: false
+                }
+            },
+            pool: {
+                max: 10,
+                min: 0,
+                acquire: 30000,
+                idle: 10000
+            },
+            define: {
+                timestamps: true,
+                underscored: true,
+                freezeTableName: true
+            }
+        }
+    );
 } else {
     // Local development: use individual DB_ variables
+    console.log('🔗 Connecting via DB_* variables (local)...');
     sequelize = new Sequelize(
         process.env.DB_NAME || 'edossier_db',
         process.env.DB_USER || 'postgres',
