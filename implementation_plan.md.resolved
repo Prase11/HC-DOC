@@ -1,0 +1,47 @@
+# Bug Fixes & Enterprise Migration Implementation Plan
+
+This plan addresses all 9 bugs previously fixed and newly outlines the Enterprise Database Migration (Phase 2), moving from hardcoded documents to dynamic categories and version-controlled letters.
+
+## Enterprise Migration Proposed Changes
+
+### Database Models (Sequelize)
+#### [NEW] server/src/models/document_category.model.js
+- Stores document types, separating `identity`, `family`, `education`, and `employee_letters`. Has `is_required` flag.
+
+#### [NEW] server/src/models/document_version.model.js
+- Stores individual PDF/Image versions for Employee Letters. 
+
+#### [MODIFY] server/src/models/document.model.js
+- Link `category_id` rather than hardcoding category text.
+
+#### [MODIFY] server/src/models/index.js
+- Establish the new `Category hasMany Documents`, `Document hasMany Versions`, etc.
+
+### Core Logic & Services
+#### [NEW] server/src/services/document.service.js
+- Consolidate business logic for calculating the 15-required-document completion percentage.
+
+#### [NEW] server/src/middlewares/upload.middleware.js
+- Robust Multer setup that specifically isolates storage into `storage/e-dossier/EMP_ID/category`.
+
+### Controllers & Routes
+#### [NEW] server/src/controllers/letter.controller.js
+- Endpoints `POST /api/letters/version` and get versions.
+
+#### [MODIFY] server/src/controllers/report.controller.js
+- Deprecate old counting logic in favor of using `document.service.js` which relies on `is_required` flags.
+
+#### [MODIFY] server/src/seed.js
+- Adjust the seeder to populate the new `document_categories` table before assigning random incomplete docs to employees.
+
+---
+
+## Verification Plan
+### Automated Tests
+- Drop database schema and re-run the updated `node server/src/seed.js`.
+- Start server `npm run dev:server`.
+
+### Manual Verification
+- Use `browser_subagent` to upload a new document to verify Multer creates the `EMP001` subfolder.
+- Upload two versions of the exact same Employee Letter to verify the `document_versions` table works.
+- Confirm dashboard percentage exactly matches the `15-document` rule (excluding optional SKs).

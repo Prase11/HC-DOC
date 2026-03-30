@@ -1,0 +1,364 @@
+# Enterprise Backend Architecture: HR E-Dossier System
+
+This document outlines the complete, production-ready backend architecture for the HR E-Dossier system, designed to handle thousands of employees efficiently using Node.js, Express.js, Sequelize, and PostgreSQL.
+
+## 1. Backend Project Folder Structure
+
+```text
+server/
+├── src/
+│   ├── config/
+│   │   ├── database.js          # Sequelize connection
+│   │   └── storage.js           # Multer storage configuration
+│   ├── controllers/
+│   │   ├── employee.controller.js
+│   │   ├── document.controller.js
+│   │   ├── letter.controller.js
+│   │   └── dashboard.controller.js
+│   ├── middlewares/
+│   │   ├── auth.middleware.js   # JWT & Rate Limiter
+│   │   └── upload.middleware.js # Multer implementation
+│   ├── models/
+│   │   ├── index.js
+│   │   ├── employee.model.js
+│   │   ├── document_category.model.js
+│   │   ├── document.model.js
+│   │   ├── document_version.model.js
+│   │   ├── activity_log.model.js
+│   │   └── user.model.js
+│   ├── routes/
+│   │   ├── employee.routes.js
+│   │   ├── document.routes.js
+│   │   ├── letter.routes.js
+│   │   └── dashboard.routes.js
+│   ├── services/
+│   │   └── document.service.js  # Business logic & % calculation
+│   └── app.js                   # Express initialization
+├── storage/                     # Default local storage
+│   └── e-dossier/
+└── package.json
+```
+
+## 2. PostgreSQL Schema SQL
+
+```sql
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    employee_id VARCHAR(50) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    department VARCHAR(255),
+    unit VARCHAR(255),
+    position VARCHAR(255),
+    status VARCHAR(50) DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE document_categories (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    doc_group VARCHAR(50) NOT NULL, -- 'identity', 'family', 'education', 'employee_letters'
+    is_required BOOLEAN DEFAULT true
+);
+
+CREATE TABLE documents (
+    id SERIAL PRIMARY KEY,
+    employee_id INTEGER REFERENCES employees(id) ON DELETE CASCADE,
+    category_id INTEGER REFERENCES document_categories(id) ON DELETE CASCADE,
+    status VARCHAR(50) DEFAULT 'incomplete', -- 'incomplete', 'complete'
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(employee_id, category_id)
+);
+
+CREATE TABLE document_versions (
+    id SERIAL PRIMARY KEY,
+    document_id INTEGER REFERENCES documents(id) ON DELETE CASCADE,
+    version_number INTEGER NOT NULL,
+    letter_type VARCHAR(255),
+    letter_number VARCHAR(255),
+    letter_date DATE,
+    file_path TEXT NOT NULL,
+    uploaded_by INTEGER, -- references users(id)
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE activity_logs (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER,
+    action VARCHAR(255) NOT NULL,
+    target VARCHAR(255),
+    ip_address VARCHAR(45),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Indexes for performance
+CREATE INDEX idx_employees_emp_id ON employees(employee_id);
+CREATE INDEX idx_documents_emp_id ON documents(employee_id);
+CREATE INDEX idx_documents_status ON documents(status);
+```
+
+## 3. Sequelize Models
+
+**[models/document.model.js](file:///c:/Users/nugro/OneDrive/Dokumen/HC%20Doc/server/src/models/document.model.js)**
+```javascript
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js';
+
+const Document = sequelize.define('Document', {
+    status: {
+        type: DataTypes.ENUM('incomplete', 'complete'),
+        defaultValue: 'incomplete'
+    }
+}, {
+    tableName: 'documents',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: false
+});
+
+export default Document;
+```
+
+**`models/document_version.model.js`**
+```javascript
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js';
+
+const DocumentVersion = sequelize.define('DocumentVersion', {
+    version_number: { type: DataTypes.INTEGER, allowNull: false },
+    letter_type: { type: DataTypes.STRING },
+    letter_number: { type: DataTypes.STRING },
+    letter_date: { type: DataTypes.DATEONLY },
+    file_path: { type: DataTypes.TEXT, allowNull: false },
+    uploaded_by: { type: DataTypes.INTEGER }
+}, {
+    tableName: 'document_versions',
+    timestamps: true,
+    createdAt: 'uploaded_at',
+    updatedAt: false
+});
+
+export default DocumentVersion;
+```
+
+## 4. Express API Routes
+
+**`routes/employee.routes.js`**
+```javascript
+import { Router } from 'express';
+import { getEmployees, getEmployeeById, createEmployee } from '../controllers/employee.controller.js';
+import { protect } from '../middlewares/auth.middleware.js';
+
+const router = Router();
+
+router.use(protect);
+router.get('/', getEmployees); // Supports ?page=1&limit=20
+router.get('/:id', getEmployeeById);
+router.post('/', createEmployee); // Triggers auto-create documents
+
+export default router;
+```
+
+## 5. Multer Upload Middleware & Storage Agility
+
+**`middlewares/upload.middleware.js`**
+```javascript
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+
+// BASE_STORAGE_PATH can be configured in .env
+// Development: BASE_STORAGE_PATH=./storage/e-dossier
+// Production: BASE_STORAGE_PATH=/mnt/qnap/e-dossier
+const BASE_STORAGE_PATH = process.env.BASE_STORAGE_PATH || './storage/e-dossier';
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const { employee_id, group } = req.body; 
+        // e.g., EMP001 and 'identity'
+        const dir = path.join(BASE_STORAGE_PATH, employee_id, group);
+        
+        // Ensure directory exists
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+        cb(null, dir);
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, `${req.body.letter_type.replace(/\s+/g, '_').toLowerCase()}_${uniqueSuffix}${path.extname(file.originalname)}`);
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    const allowedMimeTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+    if (allowedMimeTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Invalid file type. Only PDF, JPG, and PNG are allowed.'), false);
+    }
+};
+
+export const upload = multer({ 
+    storage, 
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter 
+});
+```
+*How storage changes:* By merely changing the `BASE_STORAGE_PATH` environment variable in the production server, all new files are seamlessly written to the QNAP NAS mounted path, requiring zero logic changes in the controllers.
+
+## 6. Document Completion Calculation Logic
+
+**`services/document.service.js`**
+```javascript
+import { Document, DocumentCategory } from '../models/index.js';
+
+export const calculateCompletionPercentage = async (employeeId) => {
+    // We only calculate based on the specific required groups and the single specific SK document
+    const REQUIRED_DOCS_COUNT = 15;
+
+    // Fetch complete documents belonging ONLY to the mandatory categories
+    const completedDocs = await Document.count({
+        where: {
+            employee_id: employeeId,
+            status: 'complete'
+        },
+        include: [{
+            model: DocumentCategory,
+            where: {
+                // It must be one of the strictly required categories
+                name: [
+                    'KTP', 'KK', 'NPWP', 'Akta Kelahiran', 'Buku Rekening', // Identity
+                    'Buku Nikah', 'KTP Istri', 'Akta Kelahiran Anak', 'KK Orang Tua', 'Mertua', // Family
+                    'Ijazah S1', 'Ijazah S2', 'Transkrip Nilai', 'Sertifikat Kompetensi', // Education
+                    'SK Pengangkatan Pegawai' // Strict specific Letter
+                ]
+            }
+        }]
+    });
+
+    const percentage = Math.round((completedDocs / REQUIRED_DOCS_COUNT) * 100);
+    return percentage;
+};
+```
+
+## 7. Employee Letter Versioning Logic
+
+**`controllers/letter.controller.js`**
+```javascript
+export const uploadLetterVersion = async (req, res) => {
+    try {
+        const { document_id, letter_type, letter_number, letter_date } = req.body;
+        
+        // Find existing versions count to determine next sequence
+        const currentVersions = await DocumentVersion.count({ where: { document_id } });
+        const nextVersion = currentVersions + 1;
+
+        // Create the new version
+        const newVersion = await DocumentVersion.create({
+            document_id,
+            version_number: nextVersion,
+            letter_type,
+            letter_number,
+            letter_date,
+            file_path: req.file.path,
+            uploaded_by: req.user.id
+        });
+
+        // Mark the parent document as complete
+        await Document.update({ status: 'complete' }, { where: { id: document_id } });
+
+        res.status(201).json({ success: true, data: newVersion });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+```
+
+## 8. Example API Responses
+
+**`GET /api/dashboard/stats`**
+```json
+{
+  "success": true,
+  "data": {
+    "total_employees": 5028,
+    "global_completion_percentage": 17,
+    "documents_status": {
+      "required_total": 75420,
+      "completed": 12821,
+      "incomplete": 62599
+    }
+  }
+}
+```
+
+**`GET /api/employees?page=1&limit=20`**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "employee_id": "EMP001",
+      "name": "Budi Santoso",
+      "position": "Manager",
+      "completion_percentage": 100
+    }
+  ],
+  "pagination": {
+    "total": 5028,
+    "page": 1,
+    "limit": 20,
+    "totalPages": 252
+  }
+}
+```
+
+## 9. Auto-Create Logic & Seed Data
+
+**Auto-Creating Documents on Employee Registration:**
+```javascript
+// Inside employee.controller.js -> createEmployee
+const newEmployee = await Employee.create(req.body);
+
+// Fetch all categories
+const allCategories = await DocumentCategory.findAll();
+
+// Bulk create document stubs
+const documentStubs = allCategories.map(cat => ({
+    employee_id: newEmployee.id,
+    category_id: cat.id,
+    status: 'incomplete'
+}));
+
+await Document.bulkCreate(documentStubs);
+```
+
+**Seed SQL for Categories (`INITIAL SEED DATA`):**
+```sql
+INSERT INTO document_categories (name, doc_group, is_required) VALUES
+('KTP', 'identity', true),
+('KK', 'identity', true),
+('NPWP', 'identity', true),
+('Akta Kelahiran', 'identity', true),
+('Buku Rekening', 'identity', true),
+
+('Buku Nikah', 'family', true),
+('KTP Istri', 'family', true),
+('Akta Kelahiran Anak', 'family', true),
+('KK Orang Tua', 'family', true),
+('Mertua', 'family', true),
+
+('Ijazah S1', 'education', true),
+('Ijazah S2', 'education', true),
+('Transkrip Nilai', 'education', true),
+('Sertifikat Kompetensi', 'education', true),
+
+('SK Pengangkatan Pegawai', 'employee_letters', true),
+('SK Promosi', 'employee_letters', false),
+('SK Non-Struktural', 'employee_letters', false),
+('SK Mutasi Struktural', 'employee_letters', false),
+('SK Perbantuan', 'employee_letters', false),
+('SK CDTP', 'employee_letters', false),
+('SK Mutasi OSA', 'employee_letters', false);
+```

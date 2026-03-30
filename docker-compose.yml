@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  hc-doc-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hc-doc-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=postgres-db
+      - DB_PORT=5432
+      - DB_NAME=edossier_db
+      - DB_USER=postgres
+      - DB_PASSWORD=your_secure_password
+      - JWT_SECRET=your_jwt_secret_key
+    depends_on:
+      - postgres-db
+    volumes:
+      # Map container folders so uploaded files are persistent across updates
+      # Sesuaikan '/share/Container/hc-doc' dengan path di QNAP Anda
+      - /share/Container/hc-doc/uploads:/app/uploads
+      - /share/Container/hc-doc/storage:/app/storage
+
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: hc-doc-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=edossier_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=your_secure_password
+    volumes:
+      # Pastikan mount volume database agar data tidak hilang
+      - /share/Container/hc-doc/postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
