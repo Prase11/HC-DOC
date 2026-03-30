@@ -25,8 +25,8 @@ if (dbUrl) {
     sequelize = new Sequelize(dbUrl, {
         dialect: 'postgres',
         logging: false,
-        dialectOptions: {
-            ssl: process.env.DB_SSL === 'false' ? false : {
+        dialectOptions: dbUrl.includes('.railway.internal') ? {} : {
+            ssl: {
                 require: true,
                 rejectUnauthorized: false
             }
