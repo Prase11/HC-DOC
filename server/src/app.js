@@ -129,7 +129,7 @@ app.use(errorHandler);
 const startServer = async () => {
     try {
         await testConnection();
-        await sequelize.sync({ alter: process.env.NODE_ENV === 'development' });
+        await sequelize.sync({ alter: true }); // Always alter so production Railway updates schema too
         console.log('✅ Database models synchronized.');
 
         app.listen(PORT, () => {
