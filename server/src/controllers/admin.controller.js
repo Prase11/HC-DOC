@@ -18,6 +18,7 @@ function formatAdmin(user) {
         id: user.id,
         name: user.name,
         email: user.email,
+        employee_id: user.employee_id || null,
         role: ROLE_DISPLAY[user.role] || user.role,
         status: user.status === 'active' ? 'active' : 'disabled',
         last_login: user.last_login
@@ -49,7 +50,7 @@ export const getAdmins = async (req, res) => {
 // POST /api/admins
 export const createAdmin = async (req, res) => {
     try {
-        const { name, email, password, role, status } = req.body;
+        const { name, email, password, role, status, employee_id } = req.body;
 
         // Validation
         if (!name || !email || !password) {
@@ -78,7 +79,8 @@ export const createAdmin = async (req, res) => {
             email,
             password, // hashed by model hook
             role: dbRole,
-            status: dbStatus
+            status: dbStatus,
+            employee_id: employee_id || null
         });
 
         res.status(201).json({
@@ -99,7 +101,7 @@ export const createAdmin = async (req, res) => {
 export const updateAdmin = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, email, password, role, status } = req.body;
+        const { name, email, password, role, status, employee_id } = req.body;
 
         const user = await User.findByPk(id);
         if (!user) {
@@ -130,6 +132,9 @@ export const updateAdmin = async (req, res) => {
         }
         if (password && password.length >= 8) {
             user.password = password; // hashed by model hook
+        }
+        if (employee_id !== undefined) {
+            user.employee_id = employee_id || null;
         }
 
         await user.save();

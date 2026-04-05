@@ -61,8 +61,8 @@ const initials = computed(() => {
 const stats = computed(() => store.getEmployeeDocStats(props.employee.id))
 
 const avatarColors = [
-  'linear-gradient(135deg, #7c3aed, #a78bfa)',
-  'linear-gradient(135deg, #06b6d4, #67e8f9)',
+  'linear-gradient(135deg, #006297, #4d9bc4)',
+  'linear-gradient(135deg, #006297, #4d9bc4)',
   'linear-gradient(135deg, #f59e0b, #fbbf24)',
   'linear-gradient(135deg, #10b981, #6ee7b7)',
   'linear-gradient(135deg, #ef4444, #fca5a5)',
@@ -83,7 +83,7 @@ const progressColor = computed(() => {
 })
 
 const progressGradient = computed(() => {
-  if (stats.value.percentage === 100) return 'linear-gradient(90deg, #10b981, #06b6d4)'
+  if (stats.value.percentage === 100) return 'linear-gradient(90deg, #10b981, #006297)'
   if (stats.value.percentage >= 70) return 'linear-gradient(90deg, #f59e0b, #fbbf24)'
   return 'linear-gradient(90deg, #ef4444, #f97316)'
 })

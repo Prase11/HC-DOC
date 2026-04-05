@@ -71,7 +71,13 @@
           <span class="user-name">{{ authStore.user?.name || 'User' }}</span>
         </div>
         <div class="user-avatar">
-          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=admin&backgroundColor=b6e3f4" alt="User" />
+          <img 
+            v-if="authStore.user?.employee_id"
+            :src="`https://api-myhc.gmf-aeroasia.co.id/thumbnail/${authStore.user.employee_id}.jpg`" 
+            :alt="authStore.user?.name || 'User'"
+            @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
+          />
+          <span class="user-avatar-fallback" :style="authStore.user?.employee_id ? 'display:none' : ''">{{ (authStore.user?.name || 'U').charAt(0) }}</span>
         </div>
       </div>
       
@@ -192,20 +198,20 @@ function handleLogout() {
 <style scoped>
 .topbar {
   position: fixed;
-  top: 8px;
+  top: 12px;
   right: 28px;
   left: calc(var(--sidebar-width) + 28px);
-  height: calc(var(--topbar-height) - 8px);
+  height: calc(var(--topbar-height) - 12px);
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  border: none;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 22px;
   z-index: 100;
-  transition: left 0.3s cubic-bezier(.4,0,.2,1), background 0.3s, border-color 0.3s;
-  box-shadow: var(--shadow-sm);
+  transition: left 0.3s cubic-bezier(.4,0,.2,1), background 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 .topbar.collapsed {
   left: calc(var(--sidebar-collapsed-width) + 28px);
@@ -354,7 +360,7 @@ function handleLogout() {
 .topbar-search-input:focus {
   background: var(--surface);
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 98, 151, 0.1);
   width: 320px;
 }
 
@@ -504,6 +510,17 @@ function handleLogout() {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+.user-avatar-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #006297, #4d9bc4);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
 }
 .user-info {
   display: flex;

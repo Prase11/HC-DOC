@@ -7,16 +7,16 @@
   --sidebar-width: 260px;
   --sidebar-collapsed-width: 72px;
   --topbar-height: 80px;
-  --primary: #7c3aed;
-  --primary-light: #a78bfa;
-  --primary-dark: #5b21b6;
-  --accent: #06b6d4;
+  --primary: #006297;
+  --primary-light: #4d9bc4;
+  --primary-dark: #004a73;
+  --accent: #006297;
   --success: #10b981;
   --warning: #f59e0b;
   --danger: #ef4444;
   --surface: #ffffff;
   --surface-variant: #f8fafc;
-  --bg: #f1f5f9;
+  --bg: rgba(34, 41, 47, 0.05);
   --text: #1e293b;
   --text-secondary: #64748b;
   --border: #e2e8f0;
@@ -42,9 +42,9 @@ html.dark {
   --shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 1px 2px rgba(0, 0, 0, .3);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, .4), 0 2px 4px -2px rgba(0, 0, 0, .3);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, .4), 0 4px 6px -4px rgba(0, 0, 0, .3);
-  --primary: #a78bfa;
-  --primary-light: #c4b5fd;
-  --primary-dark: #7c3aed;
+  --primary: #4d9bc4;
+  --primary-light: #7ab8d6;
+  --primary-dark: #006297;
 }
 
 html.dark ::-webkit-scrollbar-thumb {
@@ -65,7 +65,7 @@ html.dark .drop-zone {
 }
 
 html.dark .drop-zone:hover {
-  background: rgba(167, 139, 250, .06);
+  background: rgba(0, 98, 151, .06);
 }
 
 html.dark .alert-warning {
@@ -76,7 +76,7 @@ html.dark .alert-warning {
 
 html.dark .alert-info {
   background: rgba(59, 130, 246, .12);
-  color: #60a5fa;
+  color: #4d9bc4;
   border-color: rgba(59, 130, 246, .25);
 }
 
@@ -103,7 +103,7 @@ html.dark .badge-danger {
 
 html.dark .badge-info {
   background: rgba(59, 130, 246, .15);
-  color: #60a5fa;
+  color: #4d9bc4;
 }
 
 html.dark .badge-secondary {
@@ -117,7 +117,7 @@ html.dark .btn-outline {
 }
 
 html.dark .btn-outline:hover {
-  background: rgba(167, 139, 250, .1);
+  background: rgba(0, 98, 151, .1);
 }
 
 html.dark .btn-ghost:hover {
@@ -205,7 +205,7 @@ body {
 }
 
 .data-table tbody tr:hover {
-  background: rgba(14, 165, 233, .04);
+  background: rgba(0, 98, 151, .04);
 }
 
 /* ── Stat icon bounce on card hover ──── */
@@ -310,7 +310,7 @@ body {
 }
 
 .activity-item:hover {
-  background: rgba(14, 165, 233, .04);
+  background: rgba(0, 98, 151, .04);
   transform: translateX(3px);
 }
 
@@ -386,11 +386,11 @@ body {
 .btn-primary {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: #fff;
-  box-shadow: 0 2px 8px rgba(124, 58, 237, .3);
+  box-shadow: 0 2px 8px rgba(0, 98, 151, .3);
 }
 
 .btn-primary:hover {
-  box-shadow: 0 4px 16px rgba(124, 58, 237, .4);
+  box-shadow: 0 4px 16px rgba(0, 98, 151, .4);
   transform: translateY(-1px);
 }
 
@@ -401,7 +401,7 @@ body {
 }
 
 .btn-outline:hover {
-  background: rgba(124, 58, 237, .06);
+  background: rgba(0, 98, 151, .06);
 }
 
 .btn-ghost {
@@ -609,7 +609,7 @@ body {
 .drop-zone:hover,
 .drop-zone.dragging {
   border-color: var(--primary);
-  background: rgba(124, 58, 237, .04);
+  background: rgba(0, 98, 151, .04);
 }
 
 /* ── Alert banner ─────────────────────────────────── */
@@ -669,7 +669,7 @@ body {
 .form-input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, .12);
+  box-shadow: 0 0 0 3px rgba(0, 98, 151, .12);
 }
 
 .form-select {

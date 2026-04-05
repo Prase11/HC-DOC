@@ -63,7 +63,7 @@ const resetError = () => {
 .error-retry-btn {
   padding: 10px 24px;
   border-radius: 8px;
-  background: #4f7cf6;
+  background: #006297;
   color: white;
   border: none;
   font-size: 0.9rem;

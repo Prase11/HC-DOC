@@ -46,6 +46,10 @@ const User = sequelize.define('users', {
             }
         }
     },
+    employee_id: {
+        type: DataTypes.STRING(20),
+        allowNull: true
+    },
     last_login: {
         type: DataTypes.DATE,
         allowNull: true

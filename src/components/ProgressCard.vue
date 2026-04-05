@@ -27,7 +27,7 @@ const props = defineProps({
   value: { type: [Number, String], required: true },
   label: { type: String, required: true },
   icon: { type: String, default: '' },
-  iconBg: { type: String, default: 'linear-gradient(135deg, #7c3aed, #a78bfa)' },
+  iconBg: { type: String, default: 'linear-gradient(135deg, #006297, #4d9bc4)' },
   trend: { type: Number, default: null },
   percentage: { type: Number, default: null },
   showProgress: { type: Boolean, default: false }

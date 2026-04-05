@@ -30,7 +30,7 @@
                 </div>
                 <!-- No file placeholder -->
                 <div v-else class="pdf-placeholder">
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#006297" stroke-width="1.5" stroke-linecap="round">
                     <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
                     <polyline points="14 2 14 8 20 8"/>
                     <line x1="16" y1="13" x2="8" y2="13"/>
@@ -59,6 +59,11 @@
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                   Preview Full
                 </a>
+                <button v-if="fileUrl" class="btn btn-download" @click="downloadFile" :disabled="downloading">
+                  <svg v-if="!downloading" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span v-else class="spinner" style="width:14px;height:14px;border-width:2px"></span>
+                  {{ downloading ? 'Downloading...' : 'Download' }}
+                </button>
                 <button class="btn btn-outline" @click="$emit('upload', document)">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
                   Replace
@@ -160,6 +165,7 @@ const emit = defineEmits(['close', 'upload', 'delete', 'mark-na', 'unlock-na'])
 
 const store = useDossierStore()
 const showDeleteConfirm = ref(false)
+const downloading = ref(false)
 
 const fileUrl = computed(() => {
   if (props.document.filePath) {
@@ -193,6 +199,32 @@ function doDelete() {
   emit('delete', props.document)
   showDeleteConfirm.value = false
   setTimeout(() => store.fetchActivities(), 500)
+}
+
+async function downloadFile() {
+  if (!fileUrl.value || downloading.value) return
+  downloading.value = true
+  try {
+    const fileName = props.document.file || props.document.name || 'document'
+    // Build download URL with proper query params
+    let baseUrl = ''
+    if (import.meta.env.VITE_API_URL) {
+      baseUrl = import.meta.env.VITE_API_URL.replace(/\/$/, '')
+    }
+    const downloadUrl = `${baseUrl}/api/download?path=${encodeURIComponent(props.document.filePath)}&name=${encodeURIComponent(fileName)}`
+    
+    const a = window.document.createElement('a')
+    a.href = downloadUrl
+    a.download = fileName
+    window.document.body.appendChild(a)
+    a.click()
+    a.remove()
+  } catch (e) {
+    console.error('Download failed:', e)
+    window.open(fileUrl.value, '_blank')
+  } finally {
+    downloading.value = false
+  }
 }
 
 onMounted(() => {
@@ -349,6 +381,19 @@ onMounted(() => {
 .btn-na:hover {
   background: #64748b;
   color: #fff;
+}
+.btn-download {
+  background: #e0f2fe;
+  color: #0284c7;
+  border: 1px solid #7dd3fc;
+}
+.btn-download:hover {
+  background: #0284c7;
+  color: #fff;
+}
+.btn-download:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 .btn-unlock {
   background: #dbeafe;

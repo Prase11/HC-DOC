@@ -338,12 +338,12 @@ async function doDelete() {
   justify-content: center;
   flex-shrink: 0;
 }
-.stat-icon-primary { background: rgba(14,165,233,.12); color: #0ea5e9; }
+.stat-icon-primary { background: rgba(0,98,151,.12); color: #006297; }
 .stat-icon-success { background: rgba(16,185,129,.12); color: #10b981; }
 .stat-icon-warning { background: rgba(245,158,11,.12); color: #f59e0b; }
 .stat-card-data { display: flex; flex-direction: column; }
 .stat-card-value { font-size: 1.75rem; font-weight: 800; color: var(--text); line-height: 1.1; }
-.stat-card-label { font-size: 0.8rem; color: #0ea5e9; font-weight: 600; margin-top: 4px; }
+.stat-card-label { font-size: 0.8rem; color: #006297; font-weight: 600; margin-top: 4px; }
 
 /* ── Filters ───────────────────────── */
 .filters-row {
@@ -365,7 +365,7 @@ async function doDelete() {
   appearance: auto;
   min-width: 140px;
 }
-.filter-select:focus { border-color: #0ea5e9; }
+.filter-select:focus { border-color: #006297; }
 .search-box {
   position: relative;
 }
@@ -379,7 +379,7 @@ async function doDelete() {
   outline: none;
   width: 200px;
 }
-.search-input:focus { border-color: #0ea5e9; width: 240px; }
+.search-input:focus { border-color: #006297; width: 240px; }
 .search-icon {
   position: absolute;
   right: 10px;
@@ -439,9 +439,9 @@ async function doDelete() {
   text-decoration: none;
 }
 .action-btn:hover {
-  background: rgba(14,165,233,.08);
-  color: #0ea5e9;
-  border-color: #0ea5e9;
+  background: rgba(0,98,151,.08);
+  color: #006297;
+  border-color: #006297;
 }
 .action-edit:hover {
   background: rgba(16,185,129,.08);
@@ -551,8 +551,8 @@ async function doDelete() {
 }
 .page-btn:hover:not(:disabled):not(.active) { background: #f1f5f9; color: var(--text); }
 .page-btn.active {
-  background: #0ea5e9;
-  color: #fff; border-color: #0ea5e9;
+  background: #006297;
+  color: #fff; border-color: #006297;
 }
 .page-btn:disabled { opacity: .4; cursor: not-allowed; }
 

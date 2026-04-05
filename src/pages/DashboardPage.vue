@@ -161,7 +161,7 @@
                 </div>
               </div>
               <div class="legend-item">
-                <div class="legend-bar" style="background:#38bdf8"></div>
+                <div class="legend-bar" style="background:#006297"></div>
                 <div>
                   <span class="legend-label">Incomplete</span>
                   <span class="legend-value">{{ Number(100 - stats.completionPercentage).toFixed(2).replace(/\.00$/, '') }}%</span>
@@ -304,7 +304,7 @@ const doughnutData = computed(() => ({
   labels: ['Complete', 'Incomplete'],
   datasets: [{
     data: [stats.value.totalComplete || 0, stats.value.totalIncomplete || 1],
-    backgroundColor: ['#0d9488', '#38bdf8'],
+    backgroundColor: ['#0d9488', '#006297'],
     borderWidth: 3,
     borderColor: '#ffffff',
     hoverOffset: 6
@@ -435,7 +435,7 @@ function formatFullDate(dateStr) {
   justify-content: center;
   flex-shrink: 0;
 }
-.stat-icon-primary { background: rgba(14,165,233,.12); color: #0ea5e9; }
+.stat-icon-primary { background: rgba(0,98,151,.12); color: #006297; }
 .stat-icon-success { background: rgba(16,185,129,.12); color: #10b981; }
 .stat-icon-warning { background: rgba(245,158,11,.12); color: #f59e0b; }
 .stat-data { display: flex; flex-direction: column; }
@@ -483,8 +483,8 @@ function formatFullDate(dateStr) {
 }
 .page-btn:hover:not(:disabled):not(.active) { background: var(--surface-variant); color: var(--text); }
 .page-btn.active {
-  background: linear-gradient(135deg, #0ea5e9, #0284c7);
-  color: #fff; border-color: #0ea5e9;
+  background: linear-gradient(135deg, #006297, #004a73);
+  color: #fff; border-color: #006297;
 }
 .page-btn:disabled { opacity: .4; cursor: not-allowed; }
 .page-btn.ellipsis { border: none; cursor: default; }
@@ -497,7 +497,7 @@ function formatFullDate(dateStr) {
 .missing-rank { font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); width: 20px; text-align: right; }
 .missing-doc-name { font-size: 0.85rem; font-weight: 600; color: var(--text); width: 120px; flex-shrink: 0; }
 .missing-bar-track { flex: 1; height: 18px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
-.missing-bar-fill { height: 100%; background: linear-gradient(90deg, #0ea5e9, #38bdf8); border-radius: 4px; transition: width .6s ease; }
+.missing-bar-fill { height: 100%; background: linear-gradient(90deg, #006297, #4d9bc4); border-radius: 4px; transition: width .6s ease; }
 .missing-bar-value { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); width: 100px; text-align: right; white-space: nowrap; }
 
 /* ── Right sidebar doughnut ────────────────────── */
@@ -539,7 +539,7 @@ function formatFullDate(dateStr) {
 .av-default { background: #f1f5f9; color: #64748b; }
 .activity-info { flex: 1; min-width: 0; }
 .activity-text { font-size: 0.8rem; color: var(--text); line-height: 1.4; word-wrap: break-word; }
-.activity-emp-id { font-weight: 700; color: #0ea5e9; }
+.activity-emp-id { font-weight: 700; color: #006297; }
 .activity-doc-id { font-weight: 700; color: var(--text); }
 .activity-meta { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
 .activity-meta-row { display: flex; align-items: center; gap: 6px; color: #64748b; }

@@ -293,8 +293,8 @@ watch(filterType, () => {
 })
 
 const avatarColors = [
-  'linear-gradient(135deg, #7c3aed, #a78bfa)',
-  'linear-gradient(135deg, #06b6d4, #67e8f9)',
+  'linear-gradient(135deg, #006297, #4d9bc4)',
+  'linear-gradient(135deg, #006297, #4d9bc4)',
   'linear-gradient(135deg, #f59e0b, #fbbf24)',
   'linear-gradient(135deg, #10b981, #6ee7b7)',
   'linear-gradient(135deg, #ef4444, #fca5a5)',
@@ -571,7 +571,7 @@ async function exportPdf() {
   border-radius: 50px;
   font-size: 0.75rem;
   font-weight: 600;
-  background: rgba(124,58,237,.08);
+  background: rgba(0,98,151,.08);
   color: var(--primary);
 }
 
@@ -637,8 +637,8 @@ async function exportPdf() {
 }
 .page-btn:hover:not(:disabled):not(.active) { background: var(--surface-variant); color: var(--text); }
 .page-btn.active {
-  background: linear-gradient(135deg, #0ea5e9, #0284c7);
-  color: #fff; border-color: #0ea5e9;
+  background: linear-gradient(135deg, #006297, #004a73);
+  color: #fff; border-color: #006297;
 }
 .page-btn:disabled { opacity: .4; cursor: not-allowed; }
 .page-btn.ellipsis { border: none; cursor: default; }

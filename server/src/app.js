@@ -59,6 +59,29 @@ app.use('/api/', apiLimiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Download endpoint — serves file with Content-Disposition: attachment
+app.get('/api/download', (req, res) => {
+    const filePath = req.query.path;
+    if (!filePath) return res.status(400).json({ error: 'Missing path parameter' });
+
+    // Sanitize: remove leading slash, prevent directory traversal
+    const sanitized = filePath.replace(/^\/+/, '').replace(/\.\./g, '');
+    const fullPath = path.resolve(__dirname, '..', sanitized);
+
+    // Ensure the file is within the server directory
+    const serverRoot = path.resolve(__dirname, '..');
+    if (!fullPath.startsWith(serverRoot)) {
+        return res.status(403).json({ error: 'Access denied' });
+    }
+
+    const filename = req.query.name || path.basename(fullPath);
+    res.download(fullPath, filename, (err) => {
+        if (err && !res.headersSent) {
+            res.status(404).json({ error: 'File not found' });
+        }
+    });
+});
+
 // Static uploads folder
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 app.use('/storage', express.static(path.join(__dirname, '..', 'storage')));

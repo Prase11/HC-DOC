@@ -37,7 +37,7 @@
           <!-- Form Header -->
           <div class="form-header">
             <h2 class="form-title">Sign In</h2>
-            <p class="form-subtitle">Welcome to HC Doc! Enter your details to proceed.</p>
+            <p class="form-subtitle">Welcome to HC Doc</p>
           </div>
 
           <transition name="fade">
@@ -91,7 +91,6 @@
             <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a>
           </div>
           <div class="contact-info">
-            <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> +62 21 1234 5678</span>
             <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> hcdoc@gmf-aeroasia.co.id</span>
           </div>
         </div>
@@ -153,7 +152,7 @@ const handleLogin = async () => {
   left: -10vw;
   width: 60vw;
   height: 60vw;
-  background: #3c4287;
+  background: #003d5e;
   border-radius: 50%;
   filter: blur(80px);
   opacity: 0.8;
@@ -164,7 +163,7 @@ const handleLogin = async () => {
   right: -10vw;
   width: 80vw;
   height: 80vw;
-  background: linear-gradient(135deg, #60a5fa 0%, #ffffff 100%);
+  background: linear-gradient(135deg, #006297 0%, #ffffff 100%);
   border-radius: 50%;
   filter: blur(100px);
   opacity: 0.6;
@@ -183,11 +182,11 @@ const handleLogin = async () => {
 /* Main Split Container */
 .main-container {
   z-index: 10;
-  width: 90%;
-  max-width: 1100px;
-  height: 700px;
+  width: 88%;
+  max-width: 960px;
+  height: 560px;
   background: #f4f6fb; /* very light blue/gray */
-  border-radius: 36px;
+  border-radius: 28px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   display: flex;
   overflow: hidden;
@@ -203,10 +202,10 @@ const handleLogin = async () => {
 /* === LEFT PANEL === */
 .left-panel {
   width: 50%;
-  background: linear-gradient(135deg, #4f7cf6, #2d4db5);
-  border-radius: 0 40px 40px 0;
+  background: linear-gradient(135deg, #006297, #004a73);
+  border-radius: 0 32px 32px 0;
   position: relative;
-  padding: 40px;
+  padding: 30px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -229,15 +228,15 @@ const handleLogin = async () => {
 .logo-area {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   font-weight: 700;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   z-index: 2;
 }
 
 .logo-svg {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   color: #fff;
 }
 
@@ -251,7 +250,7 @@ const handleLogin = async () => {
 
 .hero-image {
   width: 100%;
-  max-width: 450px;
+  max-width: 340px;
   height: auto;
   z-index: 2;
   animation: float 6s ease-in-out infinite;
@@ -264,16 +263,16 @@ const handleLogin = async () => {
 }
 
 .footer-area {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   color: rgba(255, 255, 255, 0.7);
-  line-height: 1.5;
+  line-height: 1.4;
   z-index: 2;
 }
 
 /* === RIGHT PANEL === */
 .right-panel {
   width: 50%;
-  padding: 30px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -283,27 +282,27 @@ const handleLogin = async () => {
 
 .form-card {
   width: 100%;
-  max-width: 360px;
+  max-width: 330px;
   background: white;
-  border-radius: 28px;
-  padding: 35px 30px;
+  border-radius: 22px;
+  padding: 28px 26px;
   box-shadow: 0 15px 35px rgba(0,0,0,0.05);
   z-index: 2;
   position: relative;
-  top: -20px;
+  top: -10px;
 }
 
 /* Form Header */
 .form-header {
-  margin-bottom: 25px;
+  margin-bottom: 18px;
   text-align: center;
 }
 
 .form-title {
-  font-size: 1.6rem;
+  font-size: 1.35rem;
   font-weight: 800;
   color: #1e293b;
-  margin: 0 0 8px 0;
+  margin: 0 0 5px 0;
 }
 
 .form-subtitle {
@@ -314,24 +313,24 @@ const handleLogin = async () => {
 
 /* Inputs */
 .input-container {
-  margin-bottom: 20px;
+  margin-bottom: 14px;
   position: relative;
 }
 
 .input-container label {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #64748b;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
 
 .input-container input {
   width: 100%;
-  padding: 14px 16px;
+  padding: 11px 14px;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  font-size: 0.95rem;
+  border-radius: 10px;
+  font-size: 0.88rem;
   font-family: inherit;
   color: #1e293b;
   background: #f8fafc;
@@ -341,9 +340,9 @@ const handleLogin = async () => {
 }
 
 .input-container input:focus {
-  border-color: #4f7cf6;
+  border-color: #006297;
   background: #fff;
-  box-shadow: 0 0 0 4px rgba(79, 124, 246, 0.1);
+  box-shadow: 0 0 0 4px rgba(0, 98, 151, 0.1);
 }
 
 .eye-btn {
@@ -360,7 +359,7 @@ const handleLogin = async () => {
 }
 
 .eye-btn:hover {
-  color: #4f7cf6;
+  color: #006297;
 }
 
 /* Form Options (Remember & Forgot) */
@@ -368,8 +367,8 @@ const handleLogin = async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
-  font-size: 0.85rem;
+  margin-bottom: 18px;
+  font-size: 0.8rem;
 }
 
 .checkbox {
@@ -395,8 +394,8 @@ const handleLogin = async () => {
 }
 
 .checkbox input:checked + .box-indicator {
-  background: #4f7cf6;
-  border-color: #4f7cf6;
+  background: #006297;
+  border-color: #006297;
 }
 
 .checkbox input:checked + .box-indicator::after {
@@ -412,7 +411,7 @@ const handleLogin = async () => {
 }
 
 .forgot-pwd {
-  color: #4f7cf6;
+  color: #006297;
   text-decoration: none;
   font-weight: 600;
 }
@@ -424,27 +423,27 @@ const handleLogin = async () => {
 /* Submit Button */
 .submit-btn {
   width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  background: #4f7cf6;
+  padding: 12px;
+  border-radius: 10px;
+  background: #006297;
   color: white;
-  font-size: 1rem;
+  font-size: 0.92rem;
   font-weight: 700;
   font-family: inherit;
   border: none;
   cursor: pointer;
   transition: all 0.3s;
-  box-shadow: 0 8px 15px rgba(79, 124, 246, 0.25);
+  box-shadow: 0 8px 15px rgba(0, 98, 151, 0.25);
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 50px;
+  height: 44px;
 }
 
 .submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 12px 20px rgba(79, 124, 246, 0.35);
-  background: #416be0;
+  box-shadow: 0 12px 20px rgba(0, 98, 151, 0.35);
+  background: #005280;
 }
 
 .submit-btn:disabled {
@@ -467,14 +466,14 @@ const handleLogin = async () => {
 /* Register Prompt */
 .register-prompt {
   text-align: center;
-  margin-top: 20px;
-  font-size: 0.85rem;
+  margin-top: 14px;
+  font-size: 0.8rem;
   color: #64748b;
   font-weight: 500;
 }
 
 .register-prompt a {
-  color: #4f7cf6;
+  color: #006297;
   text-decoration: none;
   font-weight: 700;
 }
@@ -499,12 +498,12 @@ const handleLogin = async () => {
 /* Social & Contact Footer relative to Right Panel */
 .right-footer {
   position: absolute;
-  bottom: 30px;
+  bottom: 20px;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 10px;
 }
 
 .social-icons {
@@ -518,7 +517,7 @@ const handleLogin = async () => {
 }
 
 .social-icons a:hover {
-  color: #4f7cf6;
+  color: #006297;
   transform: translateY(-2px);
 }
 

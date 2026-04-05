@@ -64,7 +64,7 @@ function handleToggleSidebar() {
   right: 0;
   left: var(--sidebar-width);
   height: calc(var(--topbar-height) + 8px);
-  background: var(--bg);
+  background: transparent;
   z-index: 99;
   pointer-events: none;
   transition: left 0.3s cubic-bezier(.4,0,.2,1), background 0.3s;

@@ -3,31 +3,11 @@
     <!-- Brand -->
     <div class="sidebar-brand">
       <div class="brand-icon">
-        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Background with gradient -->
-          <defs>
-            <linearGradient id="logoGrad" x1="0" y1="0" x2="36" y2="36">
-              <stop offset="0%" stop-color="#0ea5e9"/>
-              <stop offset="100%" stop-color="#06b6d4"/>
-            </linearGradient>
-            <linearGradient id="badgeGrad" x1="22" y1="20" x2="30" y2="28">
-              <stop offset="0%" stop-color="#22c55e"/>
-              <stop offset="100%" stop-color="#10b981"/>
-            </linearGradient>
-          </defs>
-          <!-- Rounded square bg -->
-          <rect width="36" height="36" rx="10" fill="url(#logoGrad)"/>
-          <!-- Document shape with folded corner -->
-          <path d="M10 7h10l6 6v16a2 2 0 01-2 2H10a2 2 0 01-2-2V9a2 2 0 012-2z" fill="white" fill-opacity="0.95"/>
-          <path d="M20 7l6 6h-4a2 2 0 01-2-2V7z" fill="#0ea5e9" fill-opacity="0.3"/>
-          <!-- Document lines -->
-          <line x1="12" y1="16" x2="22" y2="16" stroke="#0ea5e9" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="12" y1="20" x2="20" y2="20" stroke="#0ea5e9" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.6"/>
-          <line x1="12" y1="24" x2="18" y2="24" stroke="#0ea5e9" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.4"/>
-          <!-- Check badge -->
-          <circle cx="26" cy="25" r="6" fill="url(#badgeGrad)" stroke="white" stroke-width="1.5"/>
-          <path d="M23.5 25l1.5 1.5 3-3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <div class="brand-icon-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+        </div>
       </div>
       <transition name="fade">
         <span v-if="!collapsed" class="brand-text">HC DOC</span>
@@ -170,6 +150,15 @@ function isActive(item) {
   display: flex;
   align-items: center;
 }
+.brand-icon-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #006297, #004a73);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .brand-text {
   font-size: 1.15rem;
   font-weight: 800;
@@ -226,10 +215,10 @@ function isActive(item) {
   transform: translateX(4px);
 }
 .nav-item.active {
-  background: #0ea5e9;
+  background: #006297;
   color: #ffffff;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(14,165,233,.3);
+  box-shadow: 0 2px 8px rgba(0,98,151,.3);
 }
 
 /* ── Nav Icon ──────────────────────── */

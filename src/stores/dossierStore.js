@@ -220,6 +220,7 @@ export const useDossierStore = defineStore('dossier', () => {
                 employeeId: a.employee_id,
                 document: a.document_name,
                 user: a.performed_by,
+                adminEmployeeId: a.admin_employee_id || null,
                 date: a.createdAt || a.created_at
             }))
         } catch (e) {

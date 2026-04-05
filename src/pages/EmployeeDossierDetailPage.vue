@@ -322,8 +322,8 @@ const initials = computed(() => {
 })
 
 const avatarColors = [
-  'linear-gradient(135deg, #7c3aed, #a78bfa)',
-  'linear-gradient(135deg, #06b6d4, #67e8f9)',
+  'linear-gradient(135deg, #006297, #4d9bc4)',
+  'linear-gradient(135deg, #006297, #4d9bc4)',
   'linear-gradient(135deg, #f59e0b, #fbbf24)',
   'linear-gradient(135deg, #10b981, #6ee7b7)',
   'linear-gradient(135deg, #ef4444, #fca5a5)',
@@ -563,19 +563,19 @@ function truncateFilename(name) {
   gap: 6px;
   padding: 8px 16px;
   border-radius: var(--radius);
-  color: #0ea5e9;
+  color: #006297;
   font-size: 0.85rem;
   font-weight: 600;
   text-decoration: none;
   margin-bottom: 16px;
   transition: all 0.3s ease;
   background: #ffffff;
-  border: 1px solid #0ea5e9;
+  border: 1px solid #006297;
 }
 .back-btn:hover {
-  background: #0ea5e9;
+  background: #006297;
   color: #ffffff;
-  border-color: #0ea5e9;
+  border-color: #006297;
   box-shadow: 0 4px 12px rgba(14,165,233,0.3);
 }
 .back-btn:hover svg { stroke: #ffffff; }
@@ -696,7 +696,7 @@ function truncateFilename(name) {
   color: var(--text-secondary);
 }
 .tab-item.active .tab-count {
-  background: rgba(124,58,237,.1);
+  background: rgba(0,98,151,.1);
   color: var(--primary);
 }
 .tab-content {
@@ -719,7 +719,7 @@ function truncateFilename(name) {
   align-items: center;
   justify-content: center;
   padding: 3px 10px;
-  background: linear-gradient(135deg, rgba(124,58,237,.1), rgba(6,182,212,.1));
+  background: linear-gradient(135deg, rgba(0,98,151,.1), rgba(0,98,151,.05));
   color: var(--primary);
   border-radius: 50px;
   font-size: 0.75rem;
@@ -780,14 +780,14 @@ function truncateFilename(name) {
 .expand-btn:hover { background: var(--sidebar-bg); color: var(--primary); }
 .expand-btn svg { transition: transform 0.3s ease; }
 .expand-btn svg.rotated { transform: rotate(180deg); }
-.sk-main-row.expanded { background: rgba(124,58,237,.03); }
+.sk-main-row.expanded { background: rgba(0,98,151,.03); }
 .doc-name-label { font-weight: 500; }
 .version-count {
   font-size: 0.75rem; color: var(--text-secondary); margin-left: 8px;
   font-weight: 400;
 }
 .versions-container {
-  background: linear-gradient(135deg, rgba(124,58,237,.02), rgba(6,182,212,.02));
+  background: linear-gradient(135deg, rgba(0,98,151,.02), rgba(0,98,151,.01));
   border-top: 1px solid var(--border);
   padding: 12px 16px 12px 48px;
 }
@@ -839,10 +839,10 @@ function truncateFilename(name) {
 }
 .btn-success-outline:hover { background: #f0fdf4; border-color: #22c55e; }
 .file-link {
-  color: #0ea5e9; cursor: pointer; text-decoration: underline;
+  color: #006297; cursor: pointer; text-decoration: underline;
   font-size: 0.8rem; word-break: break-all;
 }
-.file-link:hover { color: #0284c7; }
+.file-link:hover { color: #004a73; }
 
 /* ── File Preview Modal ── */
 .file-preview-modal {

@@ -25,7 +25,7 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           Import Data
         </button>
-        <button class="btn btn-primary" @click="syncData" :disabled="isSyncing" style="background: linear-gradient(135deg, #0ea5e9, #0284c7); border: none; box-shadow: 0 2px 8px rgba(14,165,233,.3); margin-left:8px;">
+        <button class="btn btn-primary" @click="syncData" :disabled="isSyncing" style="background: linear-gradient(135deg, #006297, #004a73); border: none; box-shadow: 0 2px 8px rgba(0,98,151,.3); margin-left:8px;">
           <svg v-if="!isSyncing" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
           <span v-else class="spinner" style="width:16px;height:16px;border-width:2px;margin-right:6px"></span>
           {{ isSyncing ? 'Syncing...' : 'SYNC Data' }}
@@ -77,7 +77,16 @@
                 <tr v-for="user in admins" :key="user.id">
                   <td>
                     <div style="display:flex;align-items:center;gap:10px">
-                      <div class="admin-avatar">{{ user.name.charAt(0) }}</div>
+                      <div class="admin-avatar">
+                        <img 
+                          v-if="user.employee_id"
+                          :src="`https://api-myhc.gmf-aeroasia.co.id/thumbnail/${user.employee_id}.jpg`" 
+                          :alt="user.name"
+                          class="admin-avatar-img"
+                          @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
+                        />
+                        <span class="admin-avatar-fallback" :style="user.employee_id ? 'display:none' : ''">{{ user.name.charAt(0) }}</span>
+                      </div>
                       <span style="font-weight:600">{{ user.name }}</span>
                     </div>
                   </td>
@@ -229,8 +238,15 @@
                     </td>
                     <td>
                       <div style="display:flex;align-items:center;gap:8px">
-                        <div class="admin-avatar" style="width:24px;height:24px;font-size:0.65rem">
-                          {{ act.user.charAt(0) }}
+                        <div class="admin-avatar" style="width:28px;height:28px;font-size:0.65rem">
+                          <img 
+                            v-if="act.adminEmployeeId"
+                            :src="`https://api-myhc.gmf-aeroasia.co.id/thumbnail/${act.adminEmployeeId}.jpg`" 
+                            :alt="act.user"
+                            class="admin-avatar-img"
+                            @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
+                          />
+                          <span class="admin-avatar-fallback" :style="act.adminEmployeeId ? 'display:none' : ''">{{ act.user.charAt(0) }}</span>
                         </div>
                         <span style="font-weight:600;font-size:0.85rem">{{ act.user }}</span>
                       </div>
@@ -240,7 +256,7 @@
                         {{ act.action }}
                       </span>
                     </td>
-                    <td style="font-family:'Courier New', monospace; font-weight:600; color:#0ea5e9;">
+                    <td style="font-family:'Courier New', monospace; font-weight:600; color:#006297;">
                       {{ act.employeeId }}
                     </td>
                     <td style="font-weight:600; font-size:0.85rem; color:var(--text);">
@@ -703,6 +719,19 @@ onMounted(async () => {
   background: linear-gradient(135deg, var(--primary), var(--accent));
   display: flex; align-items: center; justify-content: center;
   color: #fff; font-weight: 700; font-size: 0.8rem; flex-shrink: 0;
+  overflow: hidden;
+}
+.admin-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.admin-avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 .doc-icon {
@@ -710,7 +739,7 @@ onMounted(async () => {
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.doc-icon-identity { background: rgba(14,165,233,.1); color: #0ea5e9; }
+.doc-icon-identity { background: rgba(0,98,151,.1); color: #006297; }
 .doc-icon-family { background: rgba(168,85,247,.1); color: #a855f7; }
 .doc-icon-education { background: rgba(34,197,94,.1); color: #22c55e; }
 .doc-icon-employment { background: rgba(245,158,11,.1); color: #f59e0b; }
@@ -720,14 +749,14 @@ onMounted(async () => {
   display: inline-block; padding: 3px 10px;
   border-radius: 50px; font-size: 0.75rem; font-weight: 600;
 }
-.role-superadmin { background: rgba(124,58,237,.1); color: #7c3aed; }
+.role-superadmin { background: rgba(0,98,151,.1); color: #006297; }
 .role-admin      { background: rgba(6,182,212,.1); color: #0891b2; }
 
 .group-chip {
   display: inline-block; padding: 3px 10px;
   border-radius: 50px; font-size: 0.75rem; font-weight: 600;
 }
-.group-identity { background: rgba(14,165,233,.1); color: #0284c7; }
+.group-identity { background: rgba(0,98,151,.1); color: #004a73; }
 .group-family { background: rgba(168,85,247,.1); color: #9333ea; }
 .group-education { background: rgba(34,197,94,.1); color: #16a34a; }
 .group-employment { background: rgba(245,158,11,.1); color: #d97706; }
@@ -740,7 +769,7 @@ onMounted(async () => {
 .status-active { background: rgba(34,197,94,.1); color: #16a34a; }
 .status-disabled { background: rgba(239,68,68,.08); color: #dc2626; }
 .status-optional { background: rgba(100,116,139,.1); color: #64748b; }
-.status-multiple { background: rgba(124,58,237,.1); color: #7c3aed; }
+.status-multiple { background: rgba(0,98,151,.1); color: #006297; }
 .status-single { background: rgba(100,116,139,.08); color: #94a3b8; }
 
 .action-btns { display: flex; gap: 6px; justify-content: flex-end; }

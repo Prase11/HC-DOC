@@ -70,6 +70,18 @@ const seedDatabase = async () => {
         await sequelize.sync({ force: true });
         console.log('✅ Tables created.\n');
 
+        // 0. Seed Admin User
+        console.log('⏳ Seeding Admin User...');
+        const User = (await import('./models/user.model.js')).default;
+        await User.create({
+            name: 'Admin HC',
+            email: 'admin@hc.com',
+            password: '123456789',
+            role: 'superadmin',
+            status: 'active'
+        });
+        console.log('✅ Admin user created (admin@hc.com).\n');
+
         // 1. Seed Categories
         console.log('⏳ Seeding Document Categories...');
         await DocumentCategory.bulkCreate(documentCategories);
