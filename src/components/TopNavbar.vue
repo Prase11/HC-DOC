@@ -44,7 +44,7 @@
               >
                 <div class="result-avatar">
                   <img 
-                    :src="`https://api-myhc.gmf-aeroasia.co.id/thumbnail/${emp.employee_id}.jpg`" 
+                    :src="getThumbnailUrl(emp.employee_id)" 
                     :alt="emp.name"
                     class="result-avatar-img"
                     @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
@@ -73,7 +73,7 @@
         <div class="user-avatar">
           <img 
             v-if="authStore.user?.employee_id"
-            :src="`https://api-myhc.gmf-aeroasia.co.id/thumbnail/${authStore.user.employee_id}.jpg`" 
+            :src="getThumbnailUrl(authStore.user.employee_id)" 
             :alt="authStore.user?.name || 'User'"
             @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
           />
@@ -93,6 +93,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
 import { apiFetch } from '../utils/api'
+import { getThumbnailUrl } from '../utils/thumbnail.js'
 
 defineProps({
   sidebarCollapsed: { type: Boolean, default: false }

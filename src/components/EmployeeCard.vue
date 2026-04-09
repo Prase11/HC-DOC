@@ -4,7 +4,7 @@
       <div class="ec-header">
         <div class="ec-avatar" :style="{ background: avatarGradient }">
           <img 
-            :src="`https://api-myhc.gmf-aeroasia.co.id/thumbnail/${employee.id}.jpg`" 
+            :src="getThumbnailUrl(employee.id)" 
             :alt="employee.name"
             class="ec-avatar-img"
             loading="lazy"
@@ -47,6 +47,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useDossierStore } from '../stores/dossierStore'
+import { getThumbnailUrl } from '../utils/thumbnail.js'
 
 const props = defineProps({
   employee: { type: Object, required: true }

@@ -94,7 +94,7 @@
                   <div style="display:flex;align-items:center;gap:10px">
                     <div class="mini-avatar" :style="{ background: getAvatarColor(row.id) }">
                       <img 
-                        :src="`https://api-myhc.gmf-aeroasia.co.id/thumbnail/${row.id}.jpg`" 
+                        :src="getThumbnailUrl(row.id)" 
                         :alt="row.name"
                         class="mini-avatar-img"
                         loading="lazy"
@@ -248,6 +248,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import StatusBadge from '../components/StatusBadge.vue'
 import { useDossierStore } from '../stores/dossierStore'
+import { getThumbnailUrl } from '../utils/thumbnail.js'
 
 const store = useDossierStore()
 

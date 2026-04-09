@@ -18,6 +18,7 @@ import dashboardRoutes from './routes/dashboard.routes.js';
 import activityRoutes from './routes/activity.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import doctypeRoutes from './routes/doctype.routes.js';
+import proxyRoutes from './routes/proxy.routes.js';
 import { errorHandler, notFoundHandler } from './middlewares/error.middleware.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -108,6 +109,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/activities', activityRoutes);
 app.use('/api/admins', adminRoutes);
 app.use('/api/doctypes', doctypeRoutes);
+app.use('/api/proxy', proxyRoutes);
 
 // ── Serve Frontend ─────────────────────
 if (process.env.NODE_ENV === 'production') {

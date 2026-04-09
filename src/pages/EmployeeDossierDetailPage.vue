@@ -39,7 +39,7 @@
           <div class="profile-left">
             <div class="profile-avatar" :style="{ background: avatarGradient }">
               <img 
-                :src="`https://api-myhc.gmf-aeroasia.co.id/thumbnail/${employee.id}.jpg`" 
+                :src="getThumbnailUrl(employee.id)" 
                 :alt="employee.name"
                 class="profile-avatar-img"
                 @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
@@ -271,6 +271,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useDossierStore } from '../stores/dossierStore'
+import { getThumbnailUrl } from '../utils/thumbnail.js'
 import DocumentTable from '../components/DocumentTable.vue'
 import DocumentDetailModal from '../components/modals/DocumentDetailModal.vue'
 import UploadDocumentModal from '../components/modals/UploadDocumentModal.vue'

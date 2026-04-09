@@ -80,7 +80,7 @@
                       <div class="admin-avatar">
                         <img 
                           v-if="user.employee_id"
-                          :src="`https://api-myhc.gmf-aeroasia.co.id/thumbnail/${user.employee_id}.jpg`" 
+                          :src="getThumbnailUrl(user.employee_id)" 
                           :alt="user.name"
                           class="admin-avatar-img"
                           @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
@@ -241,7 +241,7 @@
                         <div class="admin-avatar" style="width:28px;height:28px;font-size:0.65rem">
                           <img 
                             v-if="act.adminEmployeeId"
-                            :src="`https://api-myhc.gmf-aeroasia.co.id/thumbnail/${act.adminEmployeeId}.jpg`" 
+                            :src="getThumbnailUrl(act.adminEmployeeId)" 
                             :alt="act.user"
                             class="admin-avatar-img"
                             @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
@@ -386,6 +386,7 @@ import EditAdminModal from '../components/modals/EditAdminModal.vue'
 import DocTypeModal from '../components/modals/DocTypeModal.vue'
 import SettingsModal from '../components/modals/SettingsModal.vue'
 import { useDossierStore } from '../stores/dossierStore'
+import { getThumbnailUrl } from '../utils/thumbnail.js'
 
 // ── Tabs ──
 const activeTab = ref('admins')

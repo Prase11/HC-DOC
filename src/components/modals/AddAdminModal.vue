@@ -20,7 +20,7 @@
               <div v-if="selectedEmployee" class="selected-employee">
                 <div class="selected-avatar">
                   <img 
-                    :src="`https://api-myhc.gmf-aeroasia.co.id/thumbnail/${selectedEmployee.employee_id}.jpg`" 
+                    :src="getThumbnailUrl(selectedEmployee.employee_id)" 
                     :alt="selectedEmployee.name"
                     @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
                   />
@@ -66,7 +66,7 @@
                     >
                       <div class="suggestion-avatar">
                         <img 
-                          :src="`https://api-myhc.gmf-aeroasia.co.id/thumbnail/${emp.employee_id}.jpg`" 
+                          :src="getThumbnailUrl(emp.employee_id)" 
                           :alt="emp.name"
                           @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
                         />
@@ -155,6 +155,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { apiFetch } from '../../utils/api.js'
+import { getThumbnailUrl } from '../../utils/thumbnail.js'
 
 const emit = defineEmits(['close', 'saved'])
 
