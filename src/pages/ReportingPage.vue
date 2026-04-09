@@ -98,6 +98,7 @@
                         :alt="row.name"
                         class="mini-avatar-img"
                         loading="lazy"
+                        referrerpolicy="no-referrer"
                         @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
                       />
                       <span class="mini-avatar-fallback" style="display:none">{{ row.initials }}</span>

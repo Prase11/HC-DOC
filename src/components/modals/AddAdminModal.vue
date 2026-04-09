@@ -22,6 +22,7 @@
                   <img 
                     :src="getThumbnailUrl(selectedEmployee.employee_id)" 
                     :alt="selectedEmployee.name"
+                    referrerpolicy="no-referrer"
                     @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
                   />
                   <span class="avatar-fallback" style="display:none">{{ selectedEmployee.name.charAt(0) }}</span>
@@ -68,6 +69,7 @@
                         <img 
                           :src="getThumbnailUrl(emp.employee_id)" 
                           :alt="emp.name"
+                          referrerpolicy="no-referrer"
                           @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
                         />
                         <span class="avatar-fallback" style="display:none">{{ emp.name.charAt(0) }}</span>

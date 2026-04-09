@@ -83,6 +83,7 @@
                           :src="getThumbnailUrl(user.employee_id)" 
                           :alt="user.name"
                           class="admin-avatar-img"
+                          referrerpolicy="no-referrer"
                           @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
                         />
                         <span class="admin-avatar-fallback" :style="user.employee_id ? 'display:none' : ''">{{ user.name.charAt(0) }}</span>
@@ -244,6 +245,7 @@
                             :src="getThumbnailUrl(act.adminEmployeeId)" 
                             :alt="act.user"
                             class="admin-avatar-img"
+                            referrerpolicy="no-referrer"
                             @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
                           />
                           <span class="admin-avatar-fallback" :style="act.adminEmployeeId ? 'display:none' : ''">{{ act.user.charAt(0) }}</span>

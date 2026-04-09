@@ -8,6 +8,7 @@
             :alt="employee.name"
             class="ec-avatar-img"
             loading="lazy"
+            referrerpolicy="no-referrer"
             @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
           />
           <span class="ec-avatar-fallback" style="display:none">{{ initials }}</span>

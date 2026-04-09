@@ -47,6 +47,7 @@
                     :src="getThumbnailUrl(emp.employee_id)" 
                     :alt="emp.name"
                     class="result-avatar-img"
+                    referrerpolicy="no-referrer"
                     @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
                   />
                   <span class="result-avatar-fallback" style="display:none">{{ emp.name.charAt(0) }}</span>
@@ -75,6 +76,7 @@
             v-if="authStore.user?.employee_id"
             :src="getThumbnailUrl(authStore.user.employee_id)" 
             :alt="authStore.user?.name || 'User'"
+            referrerpolicy="no-referrer"
             @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
           />
           <span class="user-avatar-fallback" :style="authStore.user?.employee_id ? 'display:none' : ''">{{ (authStore.user?.name || 'U').charAt(0) }}</span>

@@ -42,6 +42,7 @@
                 :src="getThumbnailUrl(employee.id)" 
                 :alt="employee.name"
                 class="profile-avatar-img"
+                referrerpolicy="no-referrer"
                 @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'"
               />
               <span class="profile-avatar-fallback" style="display:none">{{ initials }}</span>
