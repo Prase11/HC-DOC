@@ -70,6 +70,10 @@
       <button class="tab-item" :class="{ active: reportTab === 'completeness' }" @click="reportTab = 'completeness'">Completeness Report</button>
       <button class="tab-item" :class="{ active: reportTab === 'missing' }" @click="reportTab = 'missing'">Incomplete Documents</button>
       <button class="tab-item" :class="{ active: reportTab === 'statistics' }" @click="reportTab = 'statistics'">Statistics</button>
+      <button class="tab-item" :class="{ active: reportTab === 'bulk' }" @click="reportTab = 'bulk'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-right:6px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Bulk Download
+      </button>
     </div>
 
     <!-- Completeness Report -->
@@ -242,6 +246,115 @@
         </div>
       </div>
     </div>
+
+    <!-- Bulk Download -->
+    <div v-if="reportTab === 'bulk'">
+      <div class="card" style="margin-bottom:20px">
+        <div class="card-body">
+          <h3 class="section-title">Bulk Document Download</h3>
+          <p style="font-size:0.875rem;color:var(--text-secondary);margin-bottom:20px">
+            Pilih jenis dokumen dan filter unit, lalu download semua file sekaligus dalam satu ZIP.
+          </p>
+          <div class="bulk-filters">
+            <div class="filter-group">
+              <label class="form-label">Jenis Dokumen <span style="color:#ef4444">*</span></label>
+              <select v-model="bulkDocName" class="form-select" @change="loadBulkPreview">
+                <option value="">-- Pilih Dokumen --</option>
+                <optgroup v-for="(cat, key) in docCategories" :key="key" :label="cat.label">
+                  <option v-for="name in cat.documents" :key="name" :value="name">{{ name }}</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label class="form-label">Filter Unit (opsional)</label>
+              <input type="text" class="form-input" v-model="bulkUnit" placeholder="Contoh: GMF, LINE, QA..." @change="loadBulkPreview" />
+            </div>
+            <div class="filter-group" style="align-self:flex-end">
+              <button class="btn btn-ghost btn-sm" @click="clearBulkFilters">Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" v-if="bulkDocName">
+        <div class="card-body">
+          <div class="bulk-table-header">
+            <div>
+              <h4 class="section-title" style="margin-bottom:4px">
+                Hasil: <span style="color:var(--primary)">{{ bulkDocName }}</span>
+                <span v-if="bulkUnit"> · Unit: {{ bulkUnit }}</span>
+              </h4>
+              <p style="font-size:0.8rem;color:var(--text-secondary)">
+                {{ bulkPreviewItems.length }} file tersedia
+                <span v-if="bulkSelected.length"> · {{ bulkSelected.length }} dipilih</span>
+              </p>
+            </div>
+            <button
+              class="btn btn-primary"
+              :disabled="bulkSelected.length === 0 || isDownloading"
+              @click="downloadBulk"
+            >
+              <svg v-if="!isDownloading" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <div v-else class="btn-spinner"></div>
+              {{ isDownloading ? 'Menyiapkan ZIP...' : `Download ZIP (${bulkSelected.length} file)` }}
+            </button>
+          </div>
+
+          <div v-if="isBulkLoading" class="bulk-loading">
+            <div class="page-spinner"></div>
+            <span>Memuat data...</span>
+          </div>
+
+          <div v-else-if="bulkPreviewItems.length === 0" class="bulk-empty">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+            <p>Tidak ada file ditemukan untuk dokumen ini.</p>
+          </div>
+
+          <div v-else class="doc-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:40px">
+                    <input type="checkbox" :checked="bulkAllSelected" @change="toggleSelectAll" />
+                  </th>
+                  <th>Employee</th>
+                  <th>Unit</th>
+                  <th>File</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in bulkPreviewItems" :key="item.employeeId">
+                  <td>
+                    <input type="checkbox" :value="item.employeeId" v-model="bulkSelected" />
+                  </td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:10px">
+                      <div class="mini-avatar" :style="{ background: getAvatarColor(item.employeeId) }">
+                        <img :src="getThumbnailUrl(item.employeeId)" :alt="item.name"
+                          class="mini-avatar-img" loading="lazy" referrerpolicy="no-referrer"
+                          @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex'" />
+                        <span class="mini-avatar-fallback" style="display:none">{{ item.name.charAt(0) }}</span>
+                      </div>
+                      <div>
+                        <div style="font-weight:600">{{ item.name }}</div>
+                        <div style="font-size:0.72rem;color:var(--text-secondary)">{{ item.employeeId }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{{ item.unit }}</td>
+                  <td>
+                    <span class="file-badge">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                      {{ item.ext.replace('.', '').toUpperCase() }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -250,8 +363,99 @@ import { ref, computed, onMounted, watch } from 'vue'
 import StatusBadge from '../components/StatusBadge.vue'
 import { useDossierStore } from '../stores/dossierStore'
 import { getThumbnailUrl } from '../utils/thumbnail.js'
+import { apiFetch } from '../utils/api.js'
+import { useToast } from '../composables/useToast'
 
 const store = useDossierStore()
+const toast = useToast()
+
+// ── Bulk Download ──────────────────────────
+const bulkDocName = ref('')
+const bulkUnit = ref('')
+const bulkPreviewItems = ref([])
+const bulkSelected = ref([])
+const isBulkLoading = ref(false)
+const isDownloading = ref(false)
+
+const docCategories = computed(() => store.documentCategories)
+
+const bulkAllSelected = computed(() =>
+  bulkPreviewItems.value.length > 0 && bulkSelected.value.length === bulkPreviewItems.value.length
+)
+
+function toggleSelectAll() {
+  if (bulkAllSelected.value) {
+    bulkSelected.value = []
+  } else {
+    bulkSelected.value = bulkPreviewItems.value.map(i => i.employeeId)
+  }
+}
+
+function clearBulkFilters() {
+  bulkDocName.value = ''
+  bulkUnit.value = ''
+  bulkPreviewItems.value = []
+  bulkSelected.value = []
+}
+
+async function loadBulkPreview() {
+  if (!bulkDocName.value) { bulkPreviewItems.value = []; return }
+  isBulkLoading.value = true
+  bulkSelected.value = []
+  try {
+    const params = new URLSearchParams({ docName: bulkDocName.value })
+    if (bulkUnit.value) params.set('unit', bulkUnit.value)
+    const res = await apiFetch(`/api/bulk/preview?${params}`)
+    const json = await res.json()
+    if (json.success) {
+      bulkPreviewItems.value = json.data
+      // Auto-select all
+      bulkSelected.value = json.data.map(i => i.employeeId)
+    } else {
+      toast.error(json.message || 'Gagal memuat preview')
+    }
+  } catch (e) {
+    toast.error('Gagal memuat data')
+  } finally {
+    isBulkLoading.value = false
+  }
+}
+
+async function downloadBulk() {
+  if (!bulkSelected.value.length) return
+  isDownloading.value = true
+  try {
+    const res = await apiFetch('/api/bulk/download', {
+      method: 'POST',
+      body: JSON.stringify({
+        docName: bulkDocName.value,
+        employeeIds: bulkSelected.value,
+        unit: bulkUnit.value || undefined
+      })
+    })
+
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}))
+      toast.error(json.message || 'Download gagal')
+      return
+    }
+
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${bulkDocName.value.replace(/\s+/g, '_')}_bulk.zip`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    toast.success(`${bulkSelected.value.length} file berhasil didownload!`)
+  } catch (e) {
+    toast.error('Terjadi kesalahan saat download')
+  } finally {
+    isDownloading.value = false
+  }
+}
 
 const filterType = ref('')
 const filterDocName = ref('')
@@ -415,7 +619,6 @@ watch(completenessCurrentPage, async (newPage, oldPage) => {
 import * as XLSX from 'xlsx'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
-import { apiFetch } from '../utils/api.js'
 
 async function getExportData() {
   const params = new URLSearchParams()
@@ -684,4 +887,63 @@ async function exportPdf() {
     padding: 2px 8px;
   }
 }
+
+/* ── Bulk Download ───────────────────── */
+.bulk-filters {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+.bulk-filters .filter-group {
+  flex: 1;
+  min-width: 180px;
+}
+.bulk-table-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.bulk-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 0;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+.bulk-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 0;
+  gap: 12px;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+.file-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: rgba(0,98,151,.1);
+  color: #006297;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.btn-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>
