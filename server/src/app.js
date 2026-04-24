@@ -26,7 +26,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.set('trust proxy', 1); // Enable trusting reverse proxy for rate limiter (Railway)
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // ── Security ──────────────────────────
 app.use(helmet());

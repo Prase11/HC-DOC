@@ -91,7 +91,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
 import { apiFetch } from '../utils/api'
@@ -108,11 +108,18 @@ const authStore = useAuthStore()
 const isDark = ref(false)
 
 // ── Search Logic ──
+const searchContainer = ref(null)
 const searchQuery = ref('')
 const searchResults = ref([])
 const isSearching = ref(false)
 const showResults = ref(false)
 let searchTimeout = null
+
+function handleClickOutside(e) {
+  if (searchContainer.value && !searchContainer.value.contains(e.target)) {
+    showResults.value = false
+  }
+}
 
 watch(searchQuery, (newVal) => {
   clearTimeout(searchTimeout)
@@ -136,13 +143,6 @@ watch(searchQuery, (newVal) => {
     }
   }, 400) // 400ms debounce
 })
-
-function handleBlur() {
-  // Give time for click event on custom element to fire before hiding results
-  setTimeout(() => {
-    showResults.value = false
-  }, 200)
-}
 
 function handleEnter() {
   const query = searchQuery.value.trim()
@@ -190,6 +190,11 @@ onMounted(() => {
     isDark.value = true
     document.documentElement.classList.add('dark')
   }
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
 })
 
 function handleLogout() {

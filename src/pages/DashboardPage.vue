@@ -217,7 +217,7 @@
 
     <!-- Footer -->
     <footer class="dashboard-footer">
-      <span>COPYRIGHT © 2025 <strong>HR E-Dossier System</strong></span>
+      <span>COPYRIGHT © 2026 <strong>HR E-Dossier System</strong></span>
       <span>Hand-crafted & Made with ❤️</span>
     </footer>
   </div>
@@ -279,19 +279,6 @@ watch(currentPage, async (newPage) => {
   await store.fetchMissingReport({ status: 'incomplete', page: newPage, limit: pageSize, format: 'grouped' })
 })
 
-async function goToPage(p) {
-  if (p === '...' || p === currentPage.value) return
-  currentPage.value = p
-}
-
-async function prevPage() {
-  if (currentPage.value > 1) currentPage.value--
-}
-
-async function nextPage() {
-  if (currentPage.value < totalPages.value) currentPage.value++
-}
-
 // ── Top missing documents horizontal bar chart (from server) ──
 const topMissingDocs = computed(() => {
   const docs = store.backendTopMissingDocs || []
@@ -350,7 +337,6 @@ function formatTimeAgo(dateStr) {
   if (diffMin < 1) return 'Just now'
   if (diffMin < 60) return `${diffMin} min ago`
   if (diffHour < 24) return `${diffHour} hour${diffHour > 1 ? 's' : ''} ago`
-  if (diffDay === 0) return 'Today'
   if (diffDay === 1) return 'Yesterday'
   if (diffDay < 7) return `${diffDay} days ago`
   if (diffDay < 30) return `${Math.floor(diffDay / 7)} week${Math.floor(diffDay / 7) > 1 ? 's' : ''} ago`

@@ -230,12 +230,13 @@ export const useDossierStore = defineStore('dossier', () => {
 
     async function fetchAdminUsers() {
         try {
-            const res = await apiFetch('/api/admin/users')
+            const res = await apiFetch('/api/admins')
             if (!res.ok) {
                 adminUsers.value = []
                 return
             }
-            adminUsers.value = await res.json()
+            const json = await res.json()
+            adminUsers.value = json.data || json
         } catch (e) {
             adminUsers.value = []
         }

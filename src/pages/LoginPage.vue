@@ -68,7 +68,6 @@
                 <span class="box-indicator"></span>
                 Remember me
               </label>
-              <a href="#" class="forgot-pwd">Forgot Password?</a>
             </div>
 
             <button type="submit" class="submit-btn" :disabled="authStore.loading || !form.email || !form.password">
@@ -76,23 +75,7 @@
               <div v-else class="loader"></div>
             </button>
             
-            <div class="register-prompt">
-              Don't have an Account? <a href="#">Request Access</a>
-            </div>
           </form>
-        </div>
-
-        <!-- Social & Contact Footer relative to Right Panel -->
-        <div class="right-footer">
-          <div class="social-icons">
-            <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>
-            <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
-            <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
-            <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a>
-          </div>
-          <div class="contact-info">
-            <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> hcdoc@gmf-aeroasia.co.id</span>
-          </div>
         </div>
       </div>
     </div>
@@ -410,16 +393,6 @@ const handleLogin = async () => {
   transform: rotate(45deg);
 }
 
-.forgot-pwd {
-  color: #006297;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.forgot-pwd:hover {
-  text-decoration: underline;
-}
-
 /* Submit Button */
 .submit-btn {
   width: 100%;
@@ -463,25 +436,6 @@ const handleLogin = async () => {
   margin-bottom: 20px;
 }
 
-/* Register Prompt */
-.register-prompt {
-  text-align: center;
-  margin-top: 14px;
-  font-size: 0.8rem;
-  color: #64748b;
-  font-weight: 500;
-}
-
-.register-prompt a {
-  color: #006297;
-  text-decoration: none;
-  font-weight: 700;
-}
-
-.register-prompt a:hover {
-  text-decoration: underline;
-}
-
 .loader {
   width: 20px;
   height: 20px;
@@ -493,46 +447,6 @@ const handleLogin = async () => {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
-}
-
-/* Social & Contact Footer relative to Right Panel */
-.right-footer {
-  position: absolute;
-  bottom: 20px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-
-.social-icons {
-  display: flex;
-  gap: 15px;
-}
-
-.social-icons a {
-  color: #94a3b8;
-  transition: color 0.3s, transform 0.3s;
-}
-
-.social-icons a:hover {
-  color: #006297;
-  transform: translateY(-2px);
-}
-
-.contact-info {
-  display: flex;
-  gap: 20px;
-  font-size: 0.75rem;
-  color: #64748b;
-  font-weight: 500;
-}
-
-.contact-info span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }
 
 /* Responsive adjustments */
@@ -570,12 +484,6 @@ const handleLogin = async () => {
     margin: 0 auto;
   }
 
-  .right-footer {
-    position: relative;
-    bottom: auto;
-    margin-top: 24px;
-    padding-bottom: 20px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -598,12 +506,6 @@ const handleLogin = async () => {
 
   .form-title {
     font-size: 1.3rem;
-  }
-
-  .contact-info {
-    flex-direction: column;
-    gap: 8px;
-    text-align: center;
   }
 
   .footer-area {

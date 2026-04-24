@@ -412,7 +412,6 @@ function openUploadFromDetail(doc) {
   uploadDocName.value = doc.name
   uploadCategory.value = activeTab.value
   isAddingVersion.value = false
-  console.log('openUploadFromDetail', { docName: doc.name, category: activeTab.value })
   showUploadModal.value = true
 }
 
@@ -420,7 +419,6 @@ function openAddVersion(docName) {
   uploadDocName.value = docName
   uploadCategory.value = activeTab.value
   isAddingVersion.value = true
-  console.log('openAddVersion', { docName, category: activeTab.value })
   showUploadModal.value = true
 }
 
