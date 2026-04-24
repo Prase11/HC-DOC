@@ -364,16 +364,6 @@
       </div>
     </teleport>
 
-    <!-- Toast Notification -->
-    <teleport to="body">
-      <transition name="toast">
-        <div v-if="toast.show" class="toast-notification" :class="'toast-' + toast.type">
-          <svg v-if="toast.type === 'success'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-          <span>{{ toast.message }}</span>
-        </div>
-      </transition>
-    </teleport>
 
     <!-- Import Modal -->
     <SettingsModal v-if="showImportModal" @close="showImportModal = false" @imported="handleImported" />
@@ -389,6 +379,7 @@ import DocTypeModal from '../components/modals/DocTypeModal.vue'
 import SettingsModal from '../components/modals/SettingsModal.vue'
 import { useDossierStore } from '../stores/dossierStore'
 import { getThumbnailUrl } from '../utils/thumbnail.js'
+import { useToast } from '../composables/useToast'
 
 // ── Tabs ──
 const activeTab = ref('admins')
@@ -447,12 +438,11 @@ const displayPages = computed(() => {
 })
 
 // ── Toast ──
-const toast = ref({ show: false, message: '', type: 'success' })
-let toastTimer = null
+const { success: toastSuccess, error: toastError, info: toastInfo } = useToast()
 function showToast(message, type = 'success') {
-  if (toastTimer) clearTimeout(toastTimer)
-  toast.value = { show: true, message, type }
-  toastTimer = setTimeout(() => { toast.value.show = false }, 3500)
+  if (type === 'error') toastError(message)
+  else if (type === 'info') toastInfo(message)
+  else toastSuccess(message)
 }
 
 // ── Helpers ──
@@ -811,22 +801,6 @@ onMounted(async () => {
   box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
 }
 
-/* Toast */
-.toast-notification {
-  position: fixed; bottom: 24px; right: 24px;
-  display: flex; align-items: center; gap: 10px;
-  padding: 14px 22px; border-radius: 12px;
-  font-size: 0.9rem; font-weight: 600;
-  box-shadow: 0 8px 32px rgba(0,0,0,.15); z-index: 10001;
-  animation: slideUp 0.35s ease;
-}
-.toast-success { background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; }
-.toast-error { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; }
-.toast-enter-active { animation: slideUp 0.35s ease; }
-.toast-leave-active { animation: slideDown 0.3s ease; }
-@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes slideDown { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(20px); } }
-
 .page-spinner {
   width: 32px; height: 32px;
   border: 3px solid var(--border);
@@ -895,14 +869,6 @@ onMounted(async () => {
     width: 28px;
     height: 28px;
   }
-  .toast-notification {
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-    font-size: 0.8rem;
-    padding: 12px 16px;
-  }
-
   /* Pagination */
   .page-btn {
     min-width: 28px;

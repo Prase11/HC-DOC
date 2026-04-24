@@ -7,19 +7,6 @@
   </div>
 
   <div class="detail-page" v-else-if="employee">
-    <!-- Success Toast -->
-    <transition name="toast">
-      <div v-if="showToast" class="toast-notification">
-        <div class="toast-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        </div>
-        <div class="toast-content">
-          <h4>Success</h4>
-          <p>{{ toastMessage }}</p>
-        </div>
-      </div>
-    </transition>
-
     <!-- Breadcrumb -->
     <nav class="breadcrumb" style="margin-bottom: 16px;">
       <router-link to="/" class="breadcrumb-item breadcrumb-home">
@@ -267,6 +254,25 @@
     <p>The employee with ID {{ employeeId }} could not be found.</p>
     <router-link to="/e-dossier" class="btn btn-primary">Back to E-Dossier</router-link>
   </div>
+
+  <!-- Confirm Delete Modal -->
+  <Teleport to="body">
+    <Transition name="fade">
+      <div v-if="showConfirmDelete" class="confirm-overlay" @click.self="cancelDelete">
+        <div class="confirm-dialog">
+          <div class="confirm-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+          </div>
+          <h3 class="confirm-title">Delete Document?</h3>
+          <p class="confirm-body">Are you sure you want to delete <strong>{{ pendingDeleteDoc?.name }}</strong>? This action cannot be undone.</p>
+          <div class="confirm-actions">
+            <button class="btn btn-ghost" @click="cancelDelete">Cancel</button>
+            <button class="btn btn-danger" @click="confirmDeleteDoc">Yes, Delete</button>
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup>
@@ -276,12 +282,14 @@ import { getThumbnailUrl } from '../utils/thumbnail.js'
 import DocumentTable from '../components/DocumentTable.vue'
 import DocumentDetailModal from '../components/modals/DocumentDetailModal.vue'
 import UploadDocumentModal from '../components/modals/UploadDocumentModal.vue'
+import { useToast } from '../composables/useToast'
 
 const props = defineProps({
   employeeId: { type: String, required: true }
 })
 
 const store = useDossierStore()
+const toast = useToast()
 
 const employee = computed(() => store.getEmployee(props.employeeId))
 const docs = computed(() => store.getEmployeeDocs(props.employeeId))
@@ -377,16 +385,18 @@ const uploadCategory = ref('')
 const expandedSK = ref(null)
 const isAddingVersion = ref(false)
 
-// Toast State
-const showToast = ref(false)
-const toastMessage = ref('')
-let toastTimer = null
+// Confirm delete state
+const showConfirmDelete = ref(false)
+const pendingDeleteDoc = ref(null)
 
-function displayToast(msg) {
-  toastMessage.value = msg
-  showToast.value = true
-  clearTimeout(toastTimer)
-  toastTimer = setTimeout(() => showToast.value = false, 3000)
+function requestDelete(doc) {
+  pendingDeleteDoc.value = doc
+  showConfirmDelete.value = true
+}
+
+function cancelDelete() {
+  pendingDeleteDoc.value = null
+  showConfirmDelete.value = false
 }
 
 const uploadSubTypes = computed(() => {
@@ -430,36 +440,68 @@ async function handleUpload(data) {
     subType: data.subType || null
   }
 
-  if (isAddingVersion.value) {
-    await store.addNewVersion(props.employeeId, uploadCategory.value, uploadDocName.value, payload, data.file)
-  } else {
-    await store.uploadDocument(props.employeeId, uploadCategory.value, uploadDocName.value, payload, data.file)
+  try {
+    if (isAddingVersion.value) {
+      await store.addNewVersion(props.employeeId, uploadCategory.value, uploadDocName.value, payload, data.file)
+      toast.success('New version added successfully!')
+    } else {
+      await store.uploadDocument(props.employeeId, uploadCategory.value, uploadDocName.value, payload, data.file)
+      toast.success('Document uploaded successfully!')
+    }
+    await store.fetchEmployeeDocs(props.employeeId)
+  } catch (e) {
+    toast.error('Failed to upload document. Please try again.')
+  } finally {
+    showUploadModal.value = false
+    isAddingVersion.value = false
   }
-  
-  await store.fetchEmployeeDocs(props.employeeId)
-  showUploadModal.value = false
-  isAddingVersion.value = false
-  
-  // Show successful upload notification
-  displayToast('Employee document has been uploaded successfully!')
 }
 
-function handleDeleteVersion(docName, versionId) {
-  store.deleteVersion(props.employeeId, activeTab.value, docName, versionId)
+async function handleDeleteVersion(docName, versionId) {
+  try {
+    await store.deleteVersion(props.employeeId, activeTab.value, docName, versionId)
+    toast.success('Version deleted successfully.')
+  } catch (e) {
+    toast.error('Failed to delete version.')
+  }
 }
 
-function handleDelete(doc) {
-  store.deleteDocument(props.employeeId, activeTab.value, doc.name)
+async function handleDelete(doc) {
+  pendingDeleteDoc.value = doc
+  showConfirmDelete.value = true
   showDetailModal.value = false
 }
 
-function handleMarkNA(doc) {
-  store.markDocOptional(props.employeeId, activeTab.value, doc.name)
+async function confirmDeleteDoc() {
+  if (!pendingDeleteDoc.value) return
+  try {
+    await store.deleteDocument(props.employeeId, activeTab.value, pendingDeleteDoc.value.name)
+    toast.success(`"${pendingDeleteDoc.value.name}" has been removed.`)
+  } catch (e) {
+    toast.error('Failed to delete document.')
+  } finally {
+    pendingDeleteDoc.value = null
+    showConfirmDelete.value = false
+  }
+}
+
+async function handleMarkNA(doc) {
+  try {
+    await store.markDocOptional(props.employeeId, activeTab.value, doc.name)
+    toast.info(`"${doc.name}" marked as N/A.`)
+  } catch (e) {
+    toast.error('Failed to update document status.')
+  }
   showDetailModal.value = false
 }
 
-function handleUnlockNA(doc) {
-  store.unlockDocOptional(props.employeeId, activeTab.value, doc.name)
+async function handleUnlockNA(doc) {
+  try {
+    await store.unlockDocOptional(props.employeeId, activeTab.value, doc.name)
+    toast.info(`"${doc.name}" unlocked.`)
+  } catch (e) {
+    toast.error('Failed to unlock document.')
+  }
   showDetailModal.value = false
 }
 
@@ -517,45 +559,68 @@ function truncateFilename(name) {
 </script>
 
 <style scoped>
-/* ── Toast Notification ── */
-.toast-notification {
+/* ── Confirm Delete Dialog ── */
+.confirm-overlay {
   position: fixed;
-  top: 24px;
-  right: 24px;
-  background: white;
-  border-left: 4px solid #10b981;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  border-radius: 8px;
-  padding: 16px 20px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  z-index: 9999;
-}
-.toast-icon {
-  color: #10b981;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(3px);
+  z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
 }
-.toast-content h4 {
-  margin: 0 0 4px;
-  color: #1e293b;
-  font-size: 0.95rem;
+.confirm-dialog {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 28px 32px;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  text-align: center;
+}
+.confirm-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #fee2e2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+.confirm-title {
+  font-size: 1.1rem;
   font-weight: 700;
+  color: var(--text);
+  margin: 0 0 10px;
 }
-.toast-content p {
-  margin: 0;
-  color: #64748b;
-  font-size: 0.85rem;
+.confirm-body {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0 0 24px;
+  line-height: 1.5;
 }
-.toast-enter-active, .toast-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
 }
-.toast-enter-from, .toast-leave-to {
-  opacity: 0;
-  transform: translateX(50px);
+.btn-ghost {
+  background: var(--surface-variant);
+  color: var(--text);
+  border: 1px solid var(--border);
 }
+.btn-ghost:hover { background: var(--border); }
+.btn-danger {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+}
+.btn-danger:hover { background: #dc2626; }
+.fade-enter-active, .fade-leave-active { transition: opacity 0.2s; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
 
 .back-btn {
   display: inline-flex;
@@ -925,12 +990,6 @@ function truncateFilename(name) {
   }
   .tabs {
     padding: 0 1rem;
-  }
-  .toast-notification {
-    top: 12px;
-    right: 12px;
-    left: 12px;
-    padding: 12px 16px;
   }
   .file-preview-modal {
     width: 95vw;

@@ -2,6 +2,7 @@
   <ErrorBoundary>
     <router-view />
   </ErrorBoundary>
+  <ToastNotification />
 </template>
 
 <script setup>
@@ -9,6 +10,7 @@ import { onMounted, watch } from 'vue'
 import { useDossierStore } from './stores/dossierStore'
 import { useAuthStore } from './stores/authStore'
 import ErrorBoundary from './components/ErrorBoundary.vue'
+import ToastNotification from './components/ToastNotification.vue'
 
 const store = useDossierStore()
 const authStore = useAuthStore()

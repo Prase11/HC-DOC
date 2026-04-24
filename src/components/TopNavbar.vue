@@ -70,6 +70,7 @@
       <div class="topbar-user">
         <div class="user-info">
           <span class="user-name">{{ authStore.user?.name || 'User' }}</span>
+          <span class="user-role">{{ authStore.isSuperAdmin ? 'Super Admin' : 'Admin' }}</span>
         </div>
         <div class="user-avatar">
           <img 
